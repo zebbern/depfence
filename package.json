@@ -1,0 +1,56 @@
+{
+  "name": "depfence",
+  "version": "1.0.0",
+  "description": "depfence — detect dependency confusion attack vectors in Node.js projects by analyzing registries, lockfiles, and scoped packages",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "bin": { "depfence": "dist/cli.js" },
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "security",
+    "dependency-confusion",
+    "supply-chain",
+    "npm",
+    "registry",
+    "vulnerability",
+    "scanner",
+    "audit",
+    "lockfile",
+    "developer-tools",
+    "cli",
+    "devsecops",
+    "depfence"
+  ],
+  "license": "MIT",
+  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zebbern/depfence.git"
+  },
+  "bugs": { "url": "https://github.com/zebbern/depfence/issues" },
+  "homepage": "https://github.com/zebbern/depfence#readme",
+  "dependencies": {
+    "commander": "^13.0.0",
+    "picocolors": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  },
+  "engines": { "node": ">=18" }
+}

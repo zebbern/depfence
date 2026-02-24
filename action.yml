@@ -1,0 +1,75 @@
+name: 'depfence'
+description: 'Detect dependency confusion attack vectors in Node.js projects'
+author: ''
+
+branding:
+  icon: 'shield'
+  color: 'red'
+
+inputs:
+  severity:
+    description: 'Minimum severity threshold (critical, high, medium, low, info)'
+    required: false
+    default: 'high'
+  online:
+    description: 'Check package names against public npm registry'
+    required: false
+    default: 'false'
+  workspace:
+    description: 'Scan all workspace packages in monorepo'
+    required: false
+    default: 'false'
+  scopes:
+    description: 'Space-separated scopes to check (e.g., @company @internal)'
+    required: false
+    default: ''
+  ignore:
+    description: 'Space-separated packages to ignore'
+    required: false
+    default: ''
+  fail-on:
+    description: 'Fail if findings at this severity or above (critical, high, medium, low, none)'
+    required: false
+    default: 'high'
+
+outputs:
+  findings:
+    description: 'Total number of findings'
+    value: ${{ steps.scan.outputs.findings }}
+  critical:
+    description: 'Number of critical findings'
+    value: ${{ steps.scan.outputs.critical }}
+  high:
+    description: 'Number of high findings'
+    value: ${{ steps.scan.outputs.high }}
+  result-json:
+    description: 'Full scan result as JSON'
+    value: ${{ steps.scan.outputs.result-json }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Build depfence
+      shell: bash
+      run: |
+        cd "${{ github.action_path }}"
+        npm ci --ignore-scripts
+        npm run build
+
+    - name: Run scan
+      id: scan
+      shell: bash
+      env:
+        INPUT_SEVERITY: ${{ inputs.severity }}
+        INPUT_ONLINE: ${{ inputs.online }}
+        INPUT_WORKSPACE: ${{ inputs.workspace }}
+        INPUT_SCOPES: ${{ inputs.scopes }}
+        INPUT_IGNORE: ${{ inputs.ignore }}
+        INPUT_FAIL_ON: ${{ inputs.fail-on }}
+        DEPFENCE_CLI: ${{ github.action_path }}/dist/cli.js
+      run: bash "${{ github.action_path }}/action/run.sh"
